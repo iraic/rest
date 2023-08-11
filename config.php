@@ -1,0 +1,4 @@
+<?php
+class Config{
+    const CLAVE = "1Q2W3E4R5T6Y7U8I1A2S3D4F5G6H7J8K";
+}

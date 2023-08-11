@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
+</head>
+
+<body>
+    
+        Nombre:
+        <input type="text" name="name" id="name">
+        <br>Correo:
+        <input type="text" name="email" id="email">
+        <br>Usuario:
+        <input type="text" name="username" id="username">
+        <br>Password:
+        <input type="password" name="password" id="password">
+        <br>Avatar:
+        <input type="file" name="avatar" id="avatar">
+        <br>Tipo de usuario:
+        <select name="role" id="role">
+            <option value="admin">Administrador</option>
+            <option value="user">Usuario</option>
+        </select>
+        <button onclick="nuevo()">Guardar</button>
+    
+    <hr>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Usuario</th>
+                <th>Password</th>
+                <th>Avatar</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody id="lista">
+
+        </tbody>
+    </table>
+    <script>
+        consulta();
+        function consulta() {
+            var jwt = localStorage.getItem("jwt")
+            fetch("users.php", { headers: { "Authorization": jwt } })
+                .then((r) => r.json())
+                .then((usuarios) => {
+                    var tabla = "";
+                    usuarios.forEach(user => {
+                        tabla += "<tr><td>" + user.id + "</td>"
+                            + "<td>" + user.name + "</td>"
+                            + "<td>" + user.email + "</td>"
+                            + "<td>" + user.username + "</td>"
+                            + "<td>" + user.password + "</td>"
+                            + "<td>" + user.avatar + "</td>"
+                            + "<td>" + user.role + "</td></tr>"
+                    });
+                    document.getElementById("lista").innerHTML = tabla;
+                })
+        }
+        function nuevo(){
+            var formulario = new FormData();
+            formulario.append("name", document.getElementById("name").value)
+            formulario.append("email", document.getElementById("email").value)
+            formulario.append("username", document.getElementById("username").value)
+            formulario.append("password", document.getElementById("password").value)
+            formulario.append("avatar", document.getElementById("avatar").files[0])
+            formulario.append("role", document.getElementById("role").value)
+            var jwt = localStorage.getItem("jwt")
+            fetch("users.php", {method: "POST", 
+                body: formulario, headers: { "Authorization": jwt }})
+            .then((res) => {
+                console.log(res.status);
+                if(res.status >= 400) alert("Error no se pudo guardar")
+                else alert("Datos guardados");
+            })
+        }
+    </script>
+</body>
+
+</html>

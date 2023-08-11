@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    Nombre de usurio:
+    <input type="text" name="" id="username">
+    <br>
+    Contraseña:
+    <input type="password" name="" id="password">
+    <br>
+    <input type="button" value="Entrar" onclick="login()">
+    <script>
+        function login(){
+            user = document.getElementById("username").value;
+            pass = document.getElementById("password").value;
+            console.log(user + " " + pass);
+            var form = new FormData();
+            form.append("username", user);
+            form.append("password", pass);
+            fetch("login.php", {method: "POST", body: form})
+            .then((res) => {
+                console.log(res.status);
+                if(res.status >= 400) alert("Error de usurio o contrasena")
+                else return res.json();
+            })
+            .catch((e) => alert("Error desconocido"))
+            .then((datos) => {
+                if(datos){
+                    console.log(datos.jwt)
+                    localStorage.setItem("jwt", datos.jwt)
+                    sessionStorage.setItem("jwt", datos.jwt)
+                    location.href = "inicio.html"
+                }
+                console.log(datos);
+            })
+        }
+    </script>
+</body>
+</html>
